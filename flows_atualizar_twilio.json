@@ -1,0 +1,245 @@
+[
+    {
+        "id": "e1fd9d5084fe861b",
+        "type": "debug",
+        "z": "556975f3307ff4e2",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "fa794a887a70b519",
+        "type": "arduino out",
+        "z": "556975f3307ff4e2",
+        "name": "arduino",
+        "pin": "12",
+        "state": "OUTPUT",
+        "arduino": "placa",
+        "x": 860,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f1eef1ee839ba0dc",
+        "type": "inject",
+        "z": "556975f3307ff4e2",
+        "name": "✅ DESLIGAR Alerta",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "normal/porta",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 360,
+        "wires": [
+            [
+                "80d36869797feb41"
+            ]
+        ]
+    },
+    {
+        "id": "c9704a985d06805a",
+        "type": "inject",
+        "z": "556975f3307ff4e2",
+        "name": "🚨 LIGAR Alerta",
+        "props": [
+            {
+                "p": "payload",
+                "v": "true",
+                "vt": "bool"
+            },
+            {
+                "p": "topic",
+                "v": "alerta/porta",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 300,
+        "wires": [
+            [
+                "80d36869797feb41"
+            ]
+        ]
+    },
+    {
+        "id": "80d36869797feb41",
+        "type": "switch",
+        "z": "556975f3307ff4e2",
+        "name": "Verifica se é Alerta",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "90f62da97455cada",
+                "3cb852cf4b857bad"
+            ],
+            [
+                "52778569ddf1347d"
+            ]
+        ]
+    },
+    {
+        "id": "90f62da97455cada",
+        "type": "change",
+        "z": "556975f3307ff4e2",
+        "name": "Prepara LED HIGH",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "pin",
+                "pt": "msg",
+                "to": "12",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 300,
+        "wires": [
+            [
+                "fa794a887a70b519"
+            ]
+        ]
+    },
+    {
+        "id": "52778569ddf1347d",
+        "type": "change",
+        "z": "556975f3307ff4e2",
+        "name": "Prepara LED LOW",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "pin",
+                "pt": "msg",
+                "to": "12",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 360,
+        "wires": [
+            [
+                "fa794a887a70b519"
+            ]
+        ]
+    },
+    {
+        "id": "3cb852cf4b857bad",
+        "type": "function",
+        "z": "556975f3307ff4e2",
+        "name": "Envio do corpo da msg",
+        "func": "msg.payload = \"\\nA porta está aberta!!\\nFeche a porta imediatamente!\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 240,
+        "wires": [
+            [
+                "e1fd9d5084fe861b"
+            ]
+        ]
+    },
+    {
+        "id": "e8d55e7bbb7326b5",
+        "type": "twilio out",
+        "z": "556975f3307ff4e2",
+        "twilio": "d1535bf9bcb87e86",
+        "twilioType": "sms",
+        "url": "",
+        "number": "SEU_NUM_REAL",
+        "name": "",
+        "x": 850,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "placa",
+        "type": "arduino-board",
+        "device": "COM4",
+        "name": "",
+        "samplingInt": 250,
+        "log2consol": false
+    },
+    {
+        "id": "d1535bf9bcb87e86",
+        "type": "twilio-api",
+        "name": "twilio",
+        "sid": "SEU_SID",
+        "from": "SEU_NUM_TEMP"
+    },
+    {
+        "id": "0f545c59c68e19c3",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-arduino": "1.4.0",
+            "node-red-node-twilio": "0.1.0"
+        }
+    }
+]
